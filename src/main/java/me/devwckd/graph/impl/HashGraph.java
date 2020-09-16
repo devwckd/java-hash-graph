@@ -54,7 +54,7 @@ public class HashGraph<T> implements Graph<T> {
         if(!vertices.containsKey(rootVertex)) return null;
 
         final LinkedHashSet<T> visited = new LinkedHashSet<>();
-        final Stack<T> stack = new Stack<>() {{ push(rootVertex); }};
+        final Stack<T> stack = new Stack<T>() {{ push(rootVertex); }};
 
         while(!stack.isEmpty()) {
             final T actualVertex = stack.pop();
@@ -62,7 +62,7 @@ public class HashGraph<T> implements Graph<T> {
             if(visited.contains(actualVertex)) continue;
             visited.add(actualVertex);
 
-            final Set<T> edgeSet = getEdges(rootVertex);
+            final Set<T> edgeSet = getEdges(actualVertex);
             if(edgeSet == null) continue;
 
             edgeSet.forEach(stack::push);
@@ -75,8 +75,8 @@ public class HashGraph<T> implements Graph<T> {
     public LinkedHashSet<T> breadthFirstTraversal(T rootVertex) {
         if(!vertices.containsKey(rootVertex)) return null;
 
-        final LinkedHashSet<T> visited = new LinkedHashSet<>() {{add(rootVertex);}};
-        final Queue<T> queue = new LinkedBlockingQueue<>() {{add(rootVertex);}};
+        final LinkedHashSet<T> visited = new LinkedHashSet<T>() {{add(rootVertex);}};
+        final Queue<T> queue = new LinkedBlockingQueue<T>() {{add(rootVertex);}};
 
         while(!queue.isEmpty()) {
             final T actualVertex = queue.poll();
@@ -106,17 +106,23 @@ public class HashGraph<T> implements Graph<T> {
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder("\n");
+        StringBuilder stringBuilder = new StringBuilder("HashGraph { ");
 
+        int i = 0;
         for (Map.Entry<T, Set<T>> entry : vertices.entrySet()) {
-            stringBuilder.append(entry.getKey()).append("\n");
+            stringBuilder.append("\"").append(entry.getKey().toString()).append("\": { " );
 
+            int j = 0;
             for (T t : entry.getValue()) {
-                stringBuilder.append("↳ ").append(t).append("\n");
+                stringBuilder.append("\"").append(t.toString()).append("\"");
+                if(j != entry.getValue().size() -1) stringBuilder.append(", ");
+                j++;
             }
-
-            stringBuilder.append("\n");
+            stringBuilder.append(" }");
+            if(i != vertices.size() -1) stringBuilder.append(", ");
+            i++;
         }
+        stringBuilder.append(" }");
 
         return stringBuilder.toString();
     }
